@@ -3,7 +3,7 @@ import os
 import hashlib
 import json
 from os import path
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QComboBox, QLabel, QLineEdit, QWidget, QMessageBox, QGraphicsScene, QGraphicsView, QGraphicsItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QComboBox, QLabel, QLineEdit, QWidget, QMessageBox, QGraphicsScene, QGraphicsView, QGraphicsItem, QDialog, QVBoxLayout
 from PyQt5.QtCore import Qt, QTimer, QTime, QFile, QTextStream, QPoint, QRect, QPointF, QRectF, pyqtSignal, QObject
 from PyQt5 import QtGui
 from PyQt5.QtGui import QPixmap, QPainter, QPen
@@ -308,6 +308,11 @@ class GolfTracker(QMainWindow):
         logout_button.move(295, 220)
         logout_button.clicked.connect(self.logout)
 
+        help_button = QPushButton ("?", self)
+        help_button.move(7, 223)
+        help_button.setFixedSize(25, 25)
+        help_button.clicked.connect(self.help)
+
         self.setGeometry(300, 300, 400, 250)
         self.setWindowTitle('Golf Tracker')
         self.show()
@@ -330,11 +335,59 @@ class GolfTracker(QMainWindow):
         self.login_window.show()
         self.close()
 
+#function gets called when a user presses help
+    def help(self):
+        self.help_window = Help()
+        self.help_window.show()
+        self.close()
+
+    
+#class for the help menu
+
+class Help(QDialog):
+
+    
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Help")
+        self.setGeometry(300, 300, 450, 350)
+
+        layout = QVBoxLayout()
 
 
+        title_label = QLabel("Online Help Menu")
+        title_label.setStyleSheet("font-size: 24px; font-weight: bold;")
+        title_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title_label)
 
+        info_label = QLabel("To operate my program, the user must create an account if they have not already done so. This can be done using the create account button when that is displayed on the first menu the user sees. Once the user has made an account, they can log into the software using their account details. Once in the software, the user can choose to enter distances for each club by pressing the Enter Distances button. After the user has entered in all the distances for each club, they can select a Golf Course and then press the Track My Game button. This will present the user with a separate GUI, allowing them to pick what hole they want to track at the golf course they previously chose. The user can then press right click to drop a green dot on their mouse location. This acts as the pin location. The user can pick up and replace this green dot using the space bar. Once the green dot has been placed, the user can draw a line from where they are teeing off to where they want the ball to go. The software will then calculate the club they should use based off of live windspeeds. This data will be displayed in the top left hand corner of each hole. Lastly, the user can press next hole and previous hole on the software to navigate through the selected golf course.")
+        info_label.setWordWrap(True)
+        info_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(info_label)
 
+        self.setLayout(layout)
 
+        exit_help = QPushButton("Back")
+        exit_help.move(150 , 225)
+        exit_help.setStyleSheet(
+            "QPushButton { background-color: #2ecc71; color: white; border-radius: 10px; padding: 10px; }"
+            "QPushButton:hover { background-color: #27ae60; }"
+        )
+        exit_help.clicked.connect(self.exit_help_button)
+        layout.addWidget(exit_help, alignment=Qt.AlignCenter)
+
+        self.setGeometry(300, 300, 450, 350)
+        self.setWindowTitle('Help')
+        self.show()
+
+        
+    def exit_help_button(self):
+        self.login_window = GolfTracker()
+        self.login_window.show()
+        self.close()
+
+        
 
 
 
@@ -2735,6 +2788,8 @@ if __name__ == '__main__':
     distance_window = Distance()
     account_create = CreateAccount()
     tracker_menu = Tracker()
+    help_menu = Help()
+    help_menu.hide()
     hole_one = HoleOne(image_path='hole1.png')
     hole_one.hide()
     hole_two = HoleTwo(image_path='hole2.png')
@@ -2760,5 +2815,4 @@ if __name__ == '__main__':
     main_window.hide()
     ex = HoleOne('hole1.png')
     sys.exit(app.exec_())
-
 
